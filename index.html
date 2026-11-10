@@ -1,4 +1,4 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Reiseatlas</title><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Reiseatlas"><meta name="theme-color" content="#0f766e"><style>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Reiseatlas</title><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Reiseatlas"><meta name="theme-color" content="#0f766e"><script src="config.js"></script><style>
 :root{--bg:#f6f7f9;--sf:#fff;--tx:#14181f;--mu:#6b7280;--ln:#e5e7eb;--ac:#0f766e;--acs:#d9f2ee;--wi:#d97706;--g1:#f1f6f9;--g2:#b9d0dc;--dot:#6f808b;--land:#dde5ea;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1217;--sf:#171c23;--tx:#eef1f4;--mu:#98a2b0;--ln:#262d37;--ac:#2dd4bf;--acs:#12332f;--wi:#fbbf24;--g1:#22313e;--g2:#0f1821;--dot:#8a9ba8;--land:#33444f;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0e1217;--sf:#171c23;--tx:#eef1f4;--mu:#98a2b0;--ln:#262d37;--ac:#2dd4bf;--acs:#12332f;--wi:#fbbf24;--g1:#22313e;--g2:#0f1821;--dot:#8a9ba8;--land:#33444f;color-scheme:dark}
@@ -193,6 +193,7 @@ document.addEventListener("keydown",ev=>{if(ev.key!=="Enter")return;const e=ev.t
 async function resolveNames(){const ids=[...new Set(G.groups.flatMap(g=>g.members||[]))].filter(i=>!(i in NM));if(!ids.length)return;const r=await db.from("profiles").select("id,name").in("id",ids);(r.data||[]).forEach(p=>NM[p.id]=p.name||"");ids.forEach(i=>{if(!(i in NM))NM[i]=""});soft()}
 async function init(){render();frame();if("serviceWorker" in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register("sw.js").catch(()=>{});
 try{const c=JSON.parse(localStorage.getItem("reise_cfg")||"{}");if(c.url)CFG=c}catch(e){}
+const W=window.REISE_CFG;if(W&&W.url&&W.key&&!/HIER-/.test(W.key))CFG={url:W.url,key:W.key};
 if(!CFG.url||!CFG.key||!window.supabase){dbs="nocfg";return}
 db=window.supabase.createClient(CFG.url,CFG.key);
 try{const{data}=await db.auth.getSession();if(data.session)await onSession(data.session);else{dbs="login";soft()}}catch(e){dbs="off";soft()}}
